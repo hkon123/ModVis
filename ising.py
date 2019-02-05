@@ -22,60 +22,14 @@ class Spin(object):
                     self.spins[i,j] = -1
 
 
-    def NNsum(self,state, x,y):
+    def NNsum(self, pos, x,y):
         sum = 0
-        sum+= state[x,y]*state[(x+1)%self.dimensions, y]
-        sum+= state[x,y]*state[(x-1)%self.dimensions, y]
-        sum+= state[x,y]*state[x,(y+1)%self.dimensions]
-        sum+= state[x,y]*state[x, (y-1)%self.dimensions]
+        sum+= pos*self.spins[(x+1)%self.dimensions, y]
+        sum+= pos*self.spins[(x-1)%self.dimensions, y]
+        sum+= pos*self.spins[x,(y+1)%self.dimensions]
+        sum+= pos*self.spins[x, (y-1)%self.dimensions]
         return sum*-1
 
-
-
-        '''
-        if x == 0 and y == 0:
-            sum += state[x,y]*state[x+1,y]
-            sum += state[x,y]*state[x,y+1]
-            sum += state[x,y]*state[-1,y]
-            sum += state[x,y]*state[x,-1]
-            return sum*-1
-        elif x == self.dimensions-1 and y == self.dimensions-1:
-            sum += state[x,y]*state[x-1,y]
-            sum += state[x,y]*state[x,y-1]
-            sum += state[x,y]*state[0,y]
-            sum += state[x,y]*state[x,0]
-            return sum*-1
-        elif x == 0:
-            sum += state[x,y]*state[x+1,y]
-            sum += state[x,y]*state[x,y+1]
-            sum += state[x,y]*state[x,y-1]
-            sum += state[x,y]*state[-1,y]
-            return sum*-1
-        elif x == self.dimensions-1:
-            sum += state[x,y]*state[x-1,y]
-            sum += state[x,y]*state[x,y+1]
-            sum += state[x,y]*state[x,y-1]
-            sum += state[x,y]*state[0,y]
-            return sum*-1
-        elif y == 0:
-            sum += state[x,y]*state[x+1,y]
-            sum += state[x,y]*state[x,y+1]
-            sum += state[x,y]*state[x-1,y]
-            sum += state[x,y]*state[x,-1]
-            return sum*-1
-        elif y == self.dimensions-1:
-            sum += state[x,y]*state[x-1,y]
-            sum += state[x,y]*state[x+1,y]
-            sum += state[x,y]*state[x,y-1]
-            sum += state[x,y]*state[x,0]
-            return sum*-1
-        else:
-            sum += state[x,y]*state[x+1,y]
-            sum += state[x,y]*state[x-1,y]
-            sum += state[x,y]*state[x,y+1]
-            sum += state[x,y]*state[x,y-1]
-            return sum*-1
-            '''
 
 
     def makeAlteredCopy(self):
@@ -92,8 +46,8 @@ class Spin(object):
 
     def change(self, i):
         for i in range(self.dimensions*self.dimensions):
-            index = self.makeAlteredCopy()
-            diff = self.NNsum(self.alteredCopy,index[0],index[1])-self.NNsum(self.spins,index[0],index[1])
+            index = np.random.randint(0,self.dimensions,2)
+            diff = self.NNsum(-1*self.spins[index[0],index[1]],index[0],index[1])-self.NNsum(self.spins[index[0],index[1]],index[0],index[1])
             if diff<0:
                 self.changeOriginal(index)
             else:
@@ -121,11 +75,11 @@ class Spin(object):
             index2 = np.random.randint(0,self.dimensions,2)
             beforeEnergy1 = self.NNsum(self.spins,index1[0],index1[1])
             beforeEnergy2 = self.NNsum(self.spins,index2[0],index2[1])
-            
 
 
 
-A = Spin(50,1, 100000)
+
+A = Spin(50,1.1, 100000)
 
 A.run()
 
